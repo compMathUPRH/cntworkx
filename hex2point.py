@@ -150,6 +150,32 @@ print(hex_connections)
 cgmol = nx.Graph(hex_connections)
 #print(cgmol.edges())
 
+'''
 nx.draw(cgmol, with_labels=False, font_weight='bold')
 print("total connections:")
 print(len(cgmol.edges()))
+'''
+
+# create LAMMS structure
+import granules.structure.LAMMPSdata as LAMMPSdata
+import pandas as pd
+
+lammps = LAMMPSdata.LammpsData()
+atoms = []
+for i,h in zip(range(len(hexagons)), hexagons):
+    centro = h.center()
+    atom = [i,1, 1, 0, centro[0], centro[1], centro[2], 0, 0, 0]
+    lammps.atomproperty.atoms.loc[i] = atom
+lammps.atomproperty.atoms=lammps.atomproperty.atoms.astype({
+                     'aID':int,
+                     'Mol_ID' :int,
+                     'aType' :int,
+                     'Q' :float,
+                     'x' :float,
+                     'y' :float,
+                     'z' :float,
+                     'Nx' :int,
+                     'Ny' :int,
+                     'Nz' : int
+                    })
+lammps.writeConf('caca.data')
