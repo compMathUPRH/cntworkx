@@ -35,6 +35,9 @@ class Hexagon:
         t = tuple(f"{i:.2f}" for i in self.center())
         return f"hexagon{t}"
     
+    def __contains__(self, vertex):
+        return vertex in self.vertices
+    
     def center(self):
         return tuple(self.coordinates.mean(axis=0).tolist())
 
@@ -49,10 +52,9 @@ def DFS(graph, marked, n, vert, start, count, cycle):
     cycle.append(vert)
     
     if n == 0:  # if the path of length (n-1) is found 
-        cycle_as_set = frozenset(cycle)
         if graph.has_edge(vert,start): # Check if vertex vert can end with vertex start 
             count = count + 1
-            cycles_sets.add(cycle_as_set)
+            cycles_sets.add(frozenset(cycle))
             #print(cycle)
             #cycles_sets.append(True) #marcar break-points
             #return count # fin con mismo return en if y else => va afuera
@@ -161,11 +163,13 @@ import granules.structure.LAMMPSdata as LAMMPSdata
 import pandas as pd
 
 lammps = LAMMPSdata.LammpsData()
-atoms = []
 for i,h in zip(range(len(hexagons)), hexagons):
     centro = h.center()
     atom = [i,1, 1, 0, centro[0], centro[1], centro[2], 0, 0, 0]
     lammps.atomproperty.atoms.loc[i] = atom
+
+
+
 lammps.atomproperty.atoms=lammps.atomproperty.atoms.astype({
                      'aID':int,
                      'Mol_ID' :int,
@@ -178,4 +182,17 @@ lammps.atomproperty.atoms=lammps.atomproperty.atoms.astype({
                      'Ny' :int,
                      'Nz' : int
                     })
+
+# añade aristas
+b = 1
+for i,h1 in zip(range(len(hexagons)), hexagons):
+    for j,h2 in zip(range(len(hexagons)), hexagons):
+        for v1 in h1.vertices:
+            if v1 not in h2.vertices:
+                for v2 in h2.vertices:
+                    if g.has_edge(v1,v2):
+                        lammps.topologia.bonds.loc[b] = [b, 1, i, j]
+                        b += 1
+
+
 lammps.writeConf('caca.data')
