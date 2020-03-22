@@ -1,45 +1,10 @@
 import networkx as nx
 import granules.structure.NAMDdata as gr
-
+from Polygon import Polygon
 # Python Program to count 
 # cycles of length n 
 # in a given graph. 
-class Hexagon:
-    def __init__(self,vert,coords):
-        self.vertices = tuple(vert.tolist())
-        self.coordinates = coords
-        #self.center = tuple(coords.mean(axis=0).tolist()) # redundancia peligrosa
-        
-    def __str__(self):
-        #permits printing
-        return f"hexagon object with center:\n{self.center}\nvertices:\n{self.vertices} \ncoordinates:\n{self.coordinates}\n"
-    
-    def isneighbor(self, other): #adyacencia
-        #check if has exacly 2 atoms in common with other hexagon
-        return len(frozenset(self.vertices).intersection(other.vertices)) == 2
-    
-    def __eq__(self,other):
-        #permits use of ==
-        return self.vertices == other.vertices
-    
-    def __ne__(self,other):
-        #permits use of !=
-        return self.vertices != other.vertices
-    
-    def __hash__(self):
-        #para crear el grafo
-        return hash((self.vertices,self.center()))
-    
-    def __repr__(self):
-        #mejor representación al imprimir edges del grafo
-        t = tuple(f"{i:.2f}" for i in self.center())
-        return f"hexagon{t}"
-    
-    def __contains__(self, vertex):
-        return vertex in self.vertices
-    
-    def center(self):
-        return tuple(self.coordinates.mean(axis=0).tolist())
+
 
 #from https://www.geeksforgeeks.org/cycles-of-length-n-in-an-undirected-and-connected-graph/
 # Number of vertices 
@@ -56,17 +21,12 @@ def DFS(graph, marked, n, vert, start, count, cycle):
             count = count + 1
             cycles_sets.add(frozenset(cycle))
             #print(cycle)
-            #cycles_sets.append(True) #marcar break-points
-            #return count # fin con mismo return en if y else => va afuera
-        #else: 
-            #return count  # fin con mismo return en if y else => va afuera
 
         # mark vert as un-visited to make it usable again. 
         marked[vert] = False
         cycle.pop()
 
         return count 
-
 	# For searching every possible path of length (n-1) 
     for i in graph.nodes(): 
         if not marked[i] and graph.has_edge(vert,i): 
@@ -78,9 +38,6 @@ def DFS(graph, marked, n, vert, start, count, cycle):
     marked[vert] = False
     cycle.pop()
     return count 
-
-
-
 
 # Counts cycles of length 
 # N in an undirected 
@@ -111,6 +68,7 @@ def countCycles( graph, n):
 
 # para leer cyclos y coordenadas
 cnt = gr.NAMDdata("nanotubesv0.pdb","nanotubesv0.psf","nanotubesv0.prm")
+
 psf = cnt.psf
 V = psf.atoms.shape[0]
 enlaces = zip(psf.bonds['atom1'],psf.bonds['atom2'])
@@ -132,15 +90,12 @@ cnt.pdb = cnt.pdb[['ID','x','y','z']]
 hexagons = []
 for verts in cycles_sets:
     hexagon_coordinates = cnt.pdb[cnt.pdb['ID'].isin(verts)]
-    
     v = hexagon_coordinates['ID'].values            #vertices
-    
     c = hexagon_coordinates[['x','y','z']].values   #coordenadas
-    
-    h = Hexagon(v,c)
+    h = Polygon(v,c)
     hexagons.append(h)
 
-
+#---
 
 hex_connections = []
 for h1 in hexagons:
@@ -150,49 +105,34 @@ for h1 in hexagons:
 
 print(hex_connections)
 cgmol = nx.Graph(hex_connections)
-#print(cgmol.edges())
 
-'''
-nx.draw(cgmol, with_labels=False, font_weight='bold')
-print("total connections:")
-print(len(cgmol.edges()))
-'''
 
 # create LAMMS structure
 import granules.structure.LAMMPSdata as LAMMPSdata
 import pandas as pd
 
+
 lammps = LAMMPSdata.LammpsData()
-for i,h in zip(range(len(hexagons)), hexagons):
-    centro = h.center()
-    atom = [i,1, 1, 0, centro[0], centro[1], centro[2], 0, 0, 0]
-    lammps.atomproperty.atoms.loc[i] = atom
+newatoms = pd.DataFrame([[i,1,1,0]+list(h.center())+[0]*3 for i,h in enumerate(hexagons,start=1)])
+newatoms.columns = lammps.atomproperty.atoms.columns
+lammps.atomproperty.atoms = lammps.atomproperty.atoms.append(newatoms)
 
-
-
-lammps.atomproperty.atoms=lammps.atomproperty.atoms.astype({
-                     'aID':int,
-                     'Mol_ID' :int,
-                     'aType' :int,
-                     'Q' :float,
-                     'x' :float,
-                     'y' :float,
-                     'z' :float,
-                     'Nx' :int,
-                     'Ny' :int,
-                     'Nz' : int
-                    })
+print(lammps.atomproperty.atoms)
 
 # añade aristas
 b = 1
-for i,h1 in zip(range(len(hexagons)), hexagons):
-    for j,h2 in zip(range(len(hexagons)), hexagons):
+for i,h1 in enumerate(hexagons,start=1):
+    for j,h2 in enumerate(hexagons,start=1):
         for v1 in h1.vertices:
             if v1 not in h2.vertices:
                 for v2 in h2.vertices:
                     if g.has_edge(v1,v2):
-                        lammps.topologia.bonds.loc[b] = [b, 1, i, j]
-                        b += 1
+                        lammps.topologia.bonds.loc[b] = [b,1,i,j]
+                        b+=1
+print(lammps.topologia.bonds.columns)
+lammps.topologia.bonds = lammps.topologia.bonds.drop_duplicates(subset=['Atom1','Atom2'], inplace=False).reset_index(drop=True)
+lammps.topologia.bonds['bID'] = lammps.topologia.bonds.index.copy() + 1
+print(lammps.topologia.bonds)
 
 
-lammps.writeConf('caca.data')
+lammps.writeConf('cgtube.data')
