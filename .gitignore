@@ -1,3 +1,6 @@
-cgtubes.data
-__pycache__
-
+log.lammps
+makemovie.sh
+**/__pycache__/*
+*.cite
+*.mkv
+*.data

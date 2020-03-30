@@ -1,6 +1,7 @@
 class Polygon:
     def __init__(self,vert,coords):
-        self.vertices = tuple(vert.tolist())
+        #self.vertices = tuple(vert.tolist())
+        self.vertices = vert
         self.coordinates = coords
         #self.center = tuple(coords.mean(axis=0).tolist()) # redundancia peligrosa
         
