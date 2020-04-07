@@ -3,10 +3,10 @@
 # ESTE ARCHIVO NO FUNCIONA BIEN
 
 import networkx as nx
-import granules.structure.NAMDdata as nd
+#import granules.structure.NAMDdata as nd
 import granules.structure.LAMMPSdata as ld
 from Polygon import Polygon
-from hex2point import DFS,countCycles,getCycles
+from hex2point import countCycles,getCycles
 import pandas as pd
 
 # para leer cyclos y coordenadas

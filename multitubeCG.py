@@ -1,7 +1,7 @@
 import pandas as pd
 import networkx as nx
 from Polygon import Polygon
-import hex2point #import DFS,countCycles,getCycles
+import hex2point 
 from granules.structure.LAMMPSdata import LammpsData
 from scipy.spatial.distance import pdist
 import numpy as np
@@ -151,7 +151,13 @@ for tubo in tubos:
     ld.topologia.bonds['bType'] = 1
     
     ld.topologia.bonds = ld.topologia.bonds.astype('int32')
-    ld.writeConf('finaltube.data')
-    
+    #ld.writeConf('finaltube.data')
     ldataobs.append(ld)
-    
+
+twotubes = LammpsData()
+ldataobs[1].atomproperty.atoms[['aID']] += 80
+ldataobs[1].topologia.bonds[['Atom1','Atom2']] += 80
+twotubes.atomproperty.atoms = ldataobs[0].atomproperty.atoms.append(ldataobs[1].atomproperty.atoms)
+twotubes.topologia.bonds = ldataobs[0].topologia.bonds.append(ldataobs[1].topologia.bonds)
+twotubes.writeConf('lines.data')
+

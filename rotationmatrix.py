@@ -1,8 +1,6 @@
 import granules.structure.LAMMPSdata as ld
 import numpy as np
 
-def yrotmatrix(trio):
-    np.array([[0,0,1],[0,1,0],[0,0,1]])
 
 # para leer cyclos y coordenadas
 cnt = ld.LammpsData("cgtube.data")

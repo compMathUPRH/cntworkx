@@ -54,9 +54,10 @@ lammps.writeConf('finaltube.data')
 
 #TODO:
 
-#separar los tubos y trabajarlos independientes cuando se tenga mas de uno
-
+#cada 5 grados, 100 copias distintas posiciones 
+#DONE
 #generar tubos programaticamente* a diferentes angulos (0-90) grados con operaciones matriciales
+#DONE
 # usar temperaturas diferentes (20 diffs)    1800 sims total
 
 #
