@@ -6,6 +6,9 @@ from granules.structure.LAMMPSdata import LammpsData
 from scipy.spatial.distance import pdist
 import numpy as np
 
+
+
+
 lammps = LammpsData('MultiTubes/EmptyDouble/Nanotubesed.data')
 e = lammps.topologia.bonds
 en = zip(e['Atom1'],e['Atom2'])
