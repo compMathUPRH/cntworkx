@@ -1,7 +1,7 @@
 # Solvated 5-mer tube
 
 units		real
-atom_style	atomic
+atom_style	full
 
 pair_style	lj/charmm/coul/charmm 8.0 10.0
 bond_style      harmonic
@@ -10,9 +10,9 @@ dihedral_style  charmm
 improper_style  harmonic
 kspace_style	none
 
-read_data	tubito.data
+read_data	finaltube.data
 
-neighbor	2.0 multi
+neighbor	2.0 bin
 neigh_modify	delay 5
 
 timestep	2.0
@@ -24,7 +24,7 @@ fix		1 all nvt temp 275.0 275.0 100.0 tchain 1
 
 group		tube type <= 12
 
-dump		1 tube atom 10 dump.tube
+dump		1 tube atom 10 tube.dump
 
 dump		2 tube image 25 image.*.jpg type type &
 		axes yes 0.8 0.02 view 60 -30 bond atom 0.5

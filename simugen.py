@@ -6,8 +6,8 @@ import numpy as np
 import granules.structure.LAMMPSdata as ld
 
 lammps_script_file = "lammps.in"
-base_nanotube_file = "cntworkx/nanotube.data"
-nanotube_line_file = "cntworkx/finaltube.data"
+base_nanotube_file = "nanotube.data"
+nanotube_line_file = "finaltube.data"
 
 
 script = open(lammps_script_file).readlines()
@@ -40,18 +40,18 @@ def writelobj(base,rot,direc):
     cnt.writeConf(f'{direc}/rot{rot:02}.data')
 
 
-
+parent_folder="generated"
 
 for temp in range(start_temp,max_temp,temp_step):
     pre = script[22][:20]
     suf = script[22][37:]
     mod_script =f'{pre}{temp:.1f} {temp:.1f} 100.0{suf}'
     
-    tdirectory = f"tubes{temp}k"
+    tdirectory = f"{parent_folder}/tubes{temp}k"
     if not os.path.exists(tdirectory):
         os.makedirs(tdirectory)    
     
-    ldirectory = f"lines{temp}k"
+    ldirectory = f"{parent_folder}/lines{temp}k"
     if not os.path.exists(ldirectory):
         os.makedirs(ldirectory)
     
@@ -62,21 +62,4 @@ for temp in range(start_temp,max_temp,temp_step):
         
         
         
-        """
-        cnt = ld.LammpsData()
-        cnt.atomproperty.atoms = base.atomproperty.atoms.copy()
-        cnt.atomproperty.atoms['y'] += 10
-        cnt.atomproperty.atoms['aID'] += cnt.atomproperty.atoms.shape[0]
-        
-        offset = cnt.atomproperty.atoms[['x','y','z']].mean()
-        cnt.atomproperty.atoms[['x','y','z']] = (cnt.atomproperty.atoms[['x','y','z']] - offset).dot(rotmat).rename(columns={0:'x',1:'y',2:'z'}) + offset
-        cnt.atomproperty.atoms = base.atomproperty.atoms.append(cnt.atomproperty.atoms.copy())
-        
-        cnt.topologia.bonds = base.topologia.bonds.copy()
-        cnt.topologia.bonds[['Atom1','Atom2']] += cnt.atomproperty.atoms.shape[0]/2
-        cnt.topologia.bonds = base.topologia.bonds.append(cnt.topologia.bonds.copy()).astype('int32')
-        
-        cnt.atomproperty.masses = base.atomproperty.masses.copy()
-        cnt.writeConf(f'rot{i:02}.data')
-        """
         
