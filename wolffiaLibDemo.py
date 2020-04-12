@@ -1,14 +1,15 @@
 '''
     Este programa requiere 
-        export PYTHONPATH="<directorio de Wolffia>"
+        export PYTHONPATH="<directorio de Wolffia> <directorio de granules"
        ejemplo:
-        export PYTHONPATH="/home/jse/inv/wolffia/wolffia"
+        export PYTHONPATH="/home/jse/inv/wolffia/wolffia:/home/jse/inv/granules/package/granules"
 '''
 
 #import ChemicalGraph
 from lib.chemicalGraph.molecule.allotrope.Tube import Tube
 from lib.chemicalGraph.Mixture import Mixture
 import numpy as np
+from structure.LAMMPSdata import LammpsData
 
 mix = Mixture()
 
@@ -23,5 +24,7 @@ tubo2.rotateDeg(90,0,0)
 
 mix.add(tubo1)
 mix.add(tubo2)
-mix.writePDB("dosTubos.pdb")
+#mix.writeFiles("dosTubos")
 
+lmps = LammpsData().loadWolffiaMixture(mix)
+lmps.writeConf("dosTubos.data")
