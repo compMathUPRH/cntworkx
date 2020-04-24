@@ -59,8 +59,21 @@ for temp in range(start_temp, max_temp, temp_step):
     suf = script[22][37:]
     mod_temp = f'{pre}{temp:.1f} {temp:.1f} 100.0{suf}'
     tdirectory = f"{parent_folder}/tubes{temp}k"
+    
+
     if not os.path.exists(tdirectory):
         os.makedirs(tdirectory)
 
-    open(f"{tdirectory}/lammps.in","w").writelines(script[:22]+[mod_temp]+script[23:])
-    shutil.copytree(og_folder, tdirectory,dirs_exist_ok=True)
+    for i in gennedfiles:
+        subdir = f"{tdirectory}/{i.split('/')[-1].split('.')[0]}" 
+        print(subdir)
+        if not os.path.exists(subdir):
+            os.makedirs(subdir)
+        
+        open(f"{subdir}/lammps.in","w").writelines(script[:22]+[mod_temp]+script[23:])
+        shutil.copy(i, f"{subdir}/tube.data")
+
+
+
+   # open(f"{tdirectory}/lammps.in","w").writelines(script[:22]+[mod_temp]+script[23:])
+   # shutil.copytree(og_folder, tdirectory,dirs_exist_ok=True)
