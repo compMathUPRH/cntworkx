@@ -9,7 +9,7 @@
 from lib.chemicalGraph.molecule.allotrope.Tube import Tube
 from lib.chemicalGraph.Mixture import Mixture
 import numpy as np
-from structure.LAMMPSdata import LammpsData
+from granules.structure.LAMMPSdata import LammpsData
 
 mix = Mixture()
 
