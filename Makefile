@@ -1,3 +1,3 @@
 
 clean:
-	@rm -f dosTubos.data tube.dump *.jpg
+	@rm -f dosTubos.data tube.dump *.jpg *.data
