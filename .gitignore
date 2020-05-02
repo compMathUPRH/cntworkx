@@ -5,5 +5,5 @@ makemovie.sh
 *.mkv
 *.jpg
 generated/**
-
+movie**
 
