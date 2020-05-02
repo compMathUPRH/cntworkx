@@ -6,6 +6,19 @@ import numpy as np
 import shutil
 import os
 
+from WolffiaState import WolffiaState
+from lib.chemicalGraph.molecule.allotrope.Tube import Tube
+from lib.chemicalGraph.molecule.solvent.WATER import WATER
+from interface.textWidgets.PrintBar import PrintBar
+#from lib.chemicalGraph.Mixture import Mixture
+import numpy as np
+from granules.structure.LAMMPSdata import LammpsData
+
+# build a box
+from lib.Container import Box
+
+
+
 #abrir script de lammps para editar temperatura
 lammps_script_file = "lammps.in"
 script = open(lammps_script_file).readlines()
@@ -47,14 +60,16 @@ if not os.path.exists(og_folder):
 
 pool = Pool()
 #se crean fuera del for para no calcular lo mismo mucha veces,se puede escribir lo mismo
-gennedfiles = pool.starmap(writeObj, zip([og_folder]*len(range(0,92,2)),range(0,92,2)))
+#gennedfiles = pool.starmap(writeObj, zip([og_folder]*len(range(0,92,2)),range(0,92,2)))
+gennedfiles = pool.starmap(writeObj, zip([og_folder],range(0,92,2)))
 pool.close()
 pool.join()
 print(gennedfiles)
 
 
     
-for temp in range(start_temp, max_temp, temp_step):
+#for temp in range(start_temp, max_temp, temp_step):
+for temp in [350]:
     pre = script[22][:20]
     suf = script[22][37:]
     mod_temp = f'{pre}{temp:.1f} {temp:.1f} 100.0{suf}'
