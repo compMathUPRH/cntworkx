@@ -20,15 +20,18 @@ timestep	0.05
 thermo_style	multi
 thermo		1000
 
+group		water type 2 3
 fix		1 all nvt temp 275.0 275.0 100.0 tchain 1
 
-group		tube type <= 12
+group		tube type 1
 
-dump		1 tube atom 10 tube.dump
+dump		1 all atom 10 tube.dump
 
-dump		2 tube image 250 image.*.jpg type type &
+dump		2 all image 10 image.*.jpg type type &
 		axes yes 0.8 0.02 view 60 -30 bond atom 0.5
 dump_modify	2 pad 3
 
-run		30000
+#minimize 0.0 1.0e-8 1000 100000
+run		3000
+
 
