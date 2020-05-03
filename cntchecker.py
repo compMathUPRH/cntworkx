@@ -13,14 +13,7 @@ def read_dump(filename):
         data = data.sort_values('id').reset_index(drop=True)
         #print(data)
         frames.append(data)
-
-    #para ver si cambiaron
-    for i in range(len(frames)-1):
-        if frames[i].equals(frames[i+1]):
-            #print('did not move')
-            pass
-        else:
-            print('moved')
+    return frames
 
 
 
@@ -45,8 +38,8 @@ def read_log(filename):
 
 
 
-
-read_dump('generated/tubes350k/tube00deg/tube.dump')
-read_log('generated/tubes350k/tube00deg/log.lammps')
+if __name__ == "__main__":
+    read_dump('generated/tubes350k/tube00deg/tube.dump')
+    read_log('generated/tubes350k/tube00deg/log.lammps')
 
 

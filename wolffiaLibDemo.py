@@ -55,5 +55,7 @@ bar = PrintBar(max_value=cant)
 mix.fillBox(wolffia.getContainer(), WATER(), cant, checkCollisions=True, progress=bar)
 print(mix.nodes())
 
+
+#escribir LAMMPS
 lmps = LammpsData().loadWolffiaMixture(wolffia.getMixture())
 lmps.writeConf("dosTubos.data")
