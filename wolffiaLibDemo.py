@@ -42,9 +42,11 @@ wolffia.setContainer(Box(1, (center[0]-radius, center[0]+radius,
                              center[2]-radius, center[2]+radius)))
 '''
 mins, maxs = mix.enclosingBox()
+print("wolffiaLibDemo mins, maxs",mins, maxs)
 wolffia.setContainer(Box(1, (mins[0]-10, maxs[0]+10, 
                              mins[1]-10, maxs[1]+10,
                              mins[2]-10, maxs[2]+10)))
+print("wolffiaLibDemo wolffia.getContainer() = ",wolffia.getContainer().getMaxsMins())
 
 
 # solvate
